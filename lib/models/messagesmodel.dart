@@ -4,6 +4,7 @@ class Messagesmodel {
 
   Messagesmodel({required this.messages, required this.id});
   factory Messagesmodel.fromjson(json) {
-    return Messagesmodel(messages: json["messages"], id: json["id"] ?? "");
+    return Messagesmodel(
+        messages: json["messages"] ?? "", id: json["id"] ?? "");
   }
 }

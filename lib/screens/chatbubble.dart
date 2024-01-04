@@ -15,7 +15,7 @@ class chatbubble extends StatelessWidget {
   CollectionReference messages =
       FirebaseFirestore.instance.collection('messages');
   ScrollController scrollcontroller = ScrollController();
-
+  String? data;
   @override
   Widget build(BuildContext context) {
     var email = ModalRoute.of(context)!.settings.arguments;
@@ -81,39 +81,44 @@ class chatbubble extends StatelessWidget {
                   padding: const EdgeInsets.all(15),
                   child: TextField(
                     controller: texteditingController,
-                    onSubmitted: (value) async {
-                      await messages.add({
-                        "messages": value,
-                        "timecreated": DateTime.now(),
-                        "id": email,
-                      });
-                      texteditingController.clear();
-                      scrollcontroller.animateTo(
-                        0,
-                        curve: Curves.easeOut,
-                        duration: const Duration(milliseconds: 200),
-                      );
+                    onSubmitted: (value) {
+                      data = value;
+
                       log(email.toString()!);
                     },
                     decoration: InputDecoration(
-                      hintText: "Send message",
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(
-                          color: Colors.black,
+                        hintText: "Send message",
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(
-                          color: Colors.black,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      suffixIcon: const Icon(
-                        Icons.send,
-                        color: Colors.black,
-                      ),
-                    ),
+                        suffixIcon: IconButton(
+                            onPressed: () async {
+                              await messages.add({
+                                "messages": data,
+                                "timecreated": DateTime.now(),
+                                "id": email,
+                              });
+                              texteditingController.clear();
+                              data = "";
+                              scrollcontroller.animateTo(
+                                0,
+                                curve: Curves.easeOut,
+                                duration: const Duration(milliseconds: 200),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.send,
+                              color: Colors.black,
+                            ))),
                   ),
                 )
               ],
